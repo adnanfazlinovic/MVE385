@@ -24,19 +24,23 @@ ret, bw_img = cv2.threshold(img_grayscale,9,1,cv2.THRESH_BINARY)
 cv2.imshow("Binary Image", bw_img*255)
 
 #%% Apply horizontal averaging
-kval1 = 1
-kval2 = width
-kernel = np.ones((kval1,kval2),np.float32)/(kval1*kval2)
-bw_img_av = cv2.filter2D(bw_img*255,-1,kernel)
+# kval1 = 1
+# kval2 = width
+# kernel = np.ones((kval1,kval2),np.float32)/(kval1*kval2)
+# bw_img_av = cv2.filter2D(bw_img*255,-1,kernel)
+
+bw_img_av = np.transpose(np.tile(bw_img.sum(axis=1)/width,(width,1)))
 cv2.imshow("Averaged Image", bw_img_av)
 
 #%% Convert to binary again
-ret, bw_img2 = cv2.threshold(bw_img_av,2,1,cv2.THRESH_BINARY)
+ret, bw_img2 = cv2.threshold(bw_img_av,0.01,1,cv2.THRESH_BINARY)
 cv2.imshow("Binary Image 2", bw_img2*255)
 
 #%%
 
-# # Check if we get same lines as manually
-# im_path = "./Our_data/tetra2_mask.png"
-# image_mask_man = plt.imread(im_path)
-# cv2.imshow("Difference", (image_mask_man[:,:,0]-bw_img2)*255)
+# Check if we get same lines as manually
+im_path = "./Our_data/tetra2_mask.png"
+image_mask_man = plt.imread(im_path)
+cv2.imshow("Difference", abs(image_mask_man[:,:,0]-bw_img2)*255)
+
+
