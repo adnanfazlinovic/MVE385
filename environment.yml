@@ -1,4 +1,4 @@
-# Update this file with new dependencies by running conda env update --prefix ./env --file environment.yml  --prune
+# Update this file with new dependencies by running conda env update --file environment.yml
 name: tetra
 dependencies:
         - python
@@ -8,3 +8,4 @@ dependencies:
         - matplotlib
         - scikit-image
         - jupyter
+        - tqdm
