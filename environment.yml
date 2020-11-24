@@ -1,0 +1,10 @@
+# Update this file with new dependencies by running conda env update --prefix ./env --file environment.yml  --prune
+name: tetra
+dependencies:
+        - python
+        - pytorch
+        - numpy
+        - scipy
+        - matplotlib
+        - scikit-image
+        - jupyter
