@@ -11,6 +11,9 @@ The purpose of the student project work is to evaluate if it is possible to use 
 Outcome: \
 The goal is to develop an automatic procedure for “image” healing utilizing “intelligence” and symmetry etc. to enhance the scattering patterns from SAXS/WAXS measurements.
 
+Methods:\
+Deep Image Prior. Original work: https://github.com/DmitryUlyanov/deep-image-prior.
+
 ## Get started
 ### Dependencies
 To run the code, some packages are needed. You can create a conda environment with the required dependencies by running
