@@ -51,8 +51,10 @@ dim_div_by = 64
 #mask_path = 'data/inpainting/kate_mask.png'
 
 ## Our Fig
-img_path  = '../Input_data/MD2_MV_bulk_2_new.png'
-mask_path = '../Input_data/MD2_MV_bulk_2_mask.png'
+imtype = "edge"
+img_path  = '../Input_data/MD2_MV_' + imtype + '_2_new.png'
+mask_path = '../Input_data/MD2_MV_' + imtype + '_2_mask.png'
+outp_path =  "../Output_data/" + imtype + "/plotout" 
 
 # Another text inpainting example
 # img_path  = 'data/inpainting/peppers.png'
@@ -211,7 +213,7 @@ def closure():
         out_np = torch_to_np(out)
         plot_image_grid([np.clip(out_np, 0, 1)], factor=32,  nrow=1)
         #myimgplI = Image.fromarray(myimgpl)
-        filep = "../Output_data/plotout" + str(i) + ".png"
+        filep = outp_path + str(i) + ".png"
         #myimgplI.save(filep)
         plt.savefig(filep)
         plt.close()
@@ -226,10 +228,10 @@ noise = net_input.detach().clone()
 p = get_params(OPT_OVER, net, net_input)
 optimize(OPTIMIZER, p, closure, LR, num_iter)
 
-#%%
+#%% Get final image
 
-# out_np = torch_to_np(net(net_input))
-# plot_image_grid([out_np], factor=5);
+#out_np = torch_to_np(net(net_input))
+#plot_image_grid([out_np], factor=5);
 
 
 
