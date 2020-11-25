@@ -10,4 +10,4 @@ dependencies:
         - scikit-image
         - jupyter
         - tqdm
-        - opencv
+        - opencv=4.5.*
