@@ -4,10 +4,10 @@ name: tetra
 dependencies:
         - python
         - pytorch
+        - torchvision
         - numpy
         - scipy
         - matplotlib
         - scikit-image
         - jupyter
         - tqdm
-        - opencv=4.5.*
