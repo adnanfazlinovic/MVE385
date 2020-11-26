@@ -1,8 +1,10 @@
-# Update this file with new dependencies by running conda env update --file environment.yml
+# Add all new packages that you use to this file.
+# To get your environment up to date with this file, run "conda env update --file environment.yml".
 name: tetra
 dependencies:
         - python
         - pytorch
+        - torchvision
         - numpy
         - scipy
         - matplotlib
