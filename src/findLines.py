@@ -5,7 +5,7 @@ from PIL import Image
 from skimage.color import rgb2gray
 import pathlib
 
-# Read image
+# Read imag
 imagefolder = str(pathlib.Path(__file__).parents[1]) + "/Data/Raw data/"
 imagename = "MD2_MV_bulk_2"
 imagetype = ".eps"
