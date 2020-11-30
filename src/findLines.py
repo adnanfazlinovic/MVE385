@@ -1,11 +1,11 @@
-# Import librarie
+# Import libraries
 import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
 from skimage.color import rgb2gray
 import pathlib
 
-# Read imag
+# Read image
 imagefolder = str(pathlib.Path(__file__).parents[1]) + "/Data/Raw data/"
 imagename = "MD2_MV_bulk_2"
 imagetype = ".eps"
@@ -28,7 +28,7 @@ Image.fromarray(img_as_array).save(FILEPATH_cropped)
 img_grayscale = rgb2gray(img_as_array)
 img_bw = img_grayscale > 0.01  # manually chosen threshold 0.01
 
-# Apply horizontal averaging which creates grayscale, and theb convert to binary
+# Apply horizontal averaging which creates grayscale, and then convert to binary
 img_av = np.transpose(np.tile(img_bw.sum(axis=1) / width, (width, 1)))
 img_bw = img_av > 0.01  # manually chosen threshold 0.01
 
