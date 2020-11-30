@@ -1,9 +1,18 @@
 # Todo
 ## Masking
 - ~~Save masked image in the data folder~~ **(Ingrid)**
-- Add automatic detection of beamstop and beamstop holder
-- Improve automatic detection of lines by adding a contrast requirement
-- Replace cv2 with skimage **(Noa)**
+- ~~Replace cv2 with skimage~~ **(Noa)**
+- ~~Add detection of beamstop~~ **(Adnan)**
+- ~~Improve automatic detection of lines by adding a contrast requirement~~
+- Combine `findLines` and `adnan_test`. Change from `cv2` to `skimmage`. **(Noa)**
+- Add user input for threshold **(Noa)**
+- Select multiple areas to mask **(Adnan?)**
+- `findLines` vertical and horizontal **(Ingrid)**
+- Manual image cropping to remove matlab frame **(Adnan?)**
+- Add detection of beamstop holder. Hard because the beamstop is not so dark. Possible solutions:
+  - Rotated input image. Does not work when the image pattern is not circular.
+  - Image segmentation
+
 
 ## The model
 -  Experiment with hyperparemeters and different models
