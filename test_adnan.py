@@ -1,12 +1,10 @@
 # Import libraries
 import numpy as np
-import pandas as pd
 import matplotlib.patches as patches
 from matplotlib import pyplot as plt
 import cv2
 from matplotlib import image
-import scipy
-from sklearn import cluster
+
 
 # Read in image
 image = image.imread('./Our_data/tetra1.png')
