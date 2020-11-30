@@ -71,10 +71,10 @@ def select_area_of_interest(img):
         plt.show()
 
         # Ask user to accept or reject the proposed area of interest
-        val = input("Is the region correct (Y/N)? \n")
+        val = input("Is the region correct ([y]/n)?\n")
 
         # Break if OK, re-do if not
-        if val == "Y":
+        if val == "Y" or val == "":
             OK = True
 
     # Returns the coordinates which the user selected

@@ -3,6 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
 import pathlib
+import argparse
 
 # Import modules
 from find_lines import *
@@ -26,16 +27,36 @@ def save_mask(imagename):
     """
     global img_as_array, imagefolder_new, imagetype_new
 
+    # Create argument parser for the thresholds
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-l",
+        "--lines_threshold",
+        help="Defines pixel threshold for find_lines.py.",
+        type=float,
+        default=0.01,
+    )
+    parser.add_argument(
+        "-b",
+        "--beamstop_threshold",
+        help="Defines pixel threshold for find_beamstop.py.",
+        type=int,
+        default=10,
+    )
+    args = parser.parse_args()
+
     # Create mask for horizontal lines
+    lines_threshold = args.lines_threshold
     FILEPATH_mask = imagefolder_new + imagename + "_mask" + imagetype_new
     mask_horizontal_lines = find_horizontal_lines(
-        imagename, img_as_array, imagefolder_new, imagetype_new
+        imagename, img_as_array, imagefolder_new, imagetype_new, lines_threshold
     )
 
     # Create mask for beamstop
+    beamstop_threshold = args.beamstop_threshold
     gray_scale_img = normalize_image(img)
     coordinates = select_area_of_interest(gray_scale_img)
-    mask_beamstop = create_mask(gray_scale_img, coordinates, 10)
+    mask_beamstop = create_mask(gray_scale_img, coordinates, beamstop_threshold)
 
     # Combine masks
     mask_as_array = mask_horizontal_lines * mask_beamstop
