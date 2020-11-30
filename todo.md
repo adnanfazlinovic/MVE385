@@ -4,10 +4,10 @@
 - ~~Replace cv2 with skimage~~ **(Noa)**
 - ~~Add detection of beamstop~~ **(Adnan)**
 - ~~Improve automatic detection of lines by adding a contrast requirement~~
-- Combine `findLines` and `adnan_test`. Change from `cv2` to `skimmage`. **(Noa)**
-- Add user input for threshold **(Noa)**
+- ~~Combine `findLines` and `adnan_test`. Change from `cv2` to `skimmage`.~~ **(Noa)**
+- ~~Add user input for thresholds.~~ **(Noa)**
 - Select multiple areas to mask **(Adnan?)**
-- `findLines` vertical and horizontal **(Ingrid)**
+- Find vertical lines **(Ingrid)**
 - Manual image cropping to remove matlab frame **(Adnan?)**
 - Add detection of beamstop holder. Hard because the beamstop is not so dark. Possible solutions:
   - Rotated input image. Does not work when the image pattern is not circular.
