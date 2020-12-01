@@ -7,8 +7,8 @@ import pathlib
 
 
 # Read in image
-imagefolder = str(pathlib.Path(__file__).parents[1]) + "/Data/Input_data/"
-img = plt.imread(imagefolder + "MD2_MV_bulk_2_new.png")
+#imagefolder = str(pathlib.Path(__file__).resolve().parents[1]) + "/Data/Input_data/"
+#img = plt.imread(imagefolder + "MD2_MV_bulk_2_new.png")
 
 
 def normalize_image(img):
@@ -71,7 +71,7 @@ def select_area_of_interest(img):
         plt.show()
 
         # Ask user to accept or reject the proposed area of interest
-        val = input("Is the region correct ([y]/n)?\n")
+        val = input("Is the region correct ([Y]/n)?\n")
 
         # Break if OK, re-do if not
         if val == "Y" or val == "":

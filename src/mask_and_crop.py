@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 from PIL import Image
 import pathlib
 import argparse
+from skimage.transform import rotate # test
 
 # Import modules
 from find_lines import *
@@ -30,11 +31,18 @@ def save_mask(imagename):
     # Create argument parser for the thresholds
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-l",
-        "--lines_threshold",
-        help="Defines pixel threshold for find_lines.py.",
+        "-hl",
+        "--h_lines_threshold",
+        help="Defines pixel threshold for horizontal lines in find_lines.py.",
         type=float,
         default=0.01,
+    )
+    parser.add_argument(
+        "-vl",
+        "--v_lines_threshold",
+        help="Defines pixel threshold for vertical lines in find_lines.py.",
+        type=float,
+        default=0.005,
     )
     parser.add_argument(
         "-b",
@@ -46,20 +54,27 @@ def save_mask(imagename):
     args = parser.parse_args()
 
     # Create mask for horizontal lines
-    lines_threshold = args.lines_threshold
+    h_lines_threshold = args.h_lines_threshold
     FILEPATH_mask = imagefolder_new + imagename + "_mask" + imagetype_new
     mask_horizontal_lines = find_horizontal_lines(
-        imagename, img_as_array, imagefolder_new, imagetype_new, lines_threshold
+        img_as_array, h_lines_threshold
+    )
+    
+    # Create mask for vertical lines
+    v_lines_threshold = args.v_lines_threshold
+    FILEPATH_mask = imagefolder_new + imagename + "_mask" + imagetype_new
+    mask_vertical_lines = find_vertical_lines(
+        img_as_array, v_lines_threshold
     )
 
     # Create mask for beamstop
     beamstop_threshold = args.beamstop_threshold
-    gray_scale_img = normalize_image(img)
+    gray_scale_img = normalize_image(img_as_array)
     coordinates = select_area_of_interest(gray_scale_img)
     mask_beamstop = create_mask(gray_scale_img, coordinates, beamstop_threshold)
 
     # Combine masks
-    mask_as_array = mask_horizontal_lines * mask_beamstop
+    mask_as_array = mask_horizontal_lines * mask_vertical_lines * mask_beamstop
 
     # Convert from array to 3-channel PIL image
     mask_as_array_as_dummy_rgb = np.transpose(
@@ -78,9 +93,9 @@ def save_mask(imagename):
 
 
 # Define paths and image types
-imagefolder = str(pathlib.Path(__file__).parents[1]) + "/Data/Raw data/"
-imagefolder_new = str(pathlib.Path(__file__).parents[1]) + "/Data/Input_data/"
-imagename = "MD2_MV_bulk_2"
+imagefolder = str(pathlib.Path(__file__).resolve().parents[1]) + "/Data/Raw data/"
+imagefolder_new = str(pathlib.Path(__file__).resolve().parents[1]) + "/Data/Input_data/"
+imagename = "MD2_MV_bulk_2" 
 imagetype = ".eps"
 imagetype_new = ".png"
 FILEPATH_img = imagefolder + imagename + imagetype
@@ -88,8 +103,11 @@ FILEPATH_img = imagefolder + imagename + imagetype
 # Read image
 image = plt.imread(FILEPATH_img)
 
+
 # Manual crop of MD2_MV_**_2
 img_as_array = image[39:265, 47:329, :]
+
+#img_as_array = (rotate(img_as_array,90,resize=True)*255).astype(np.uint8) # run with -vl 0.01, -hl 0.005. Testing vertical lines fun
 
 # Save cropped image and mask
 save_cropped(image)
