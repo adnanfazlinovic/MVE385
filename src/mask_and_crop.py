@@ -11,6 +11,29 @@ from find_lines import *
 from find_beamstop import *
 
 
+def normalize_image(img):
+
+    """
+    Takes input image (usually RGB) and transforms it into grayscale.
+    Normalizes the inputs so that they are ints ranging from 0 to 255.
+    0 corresponds to smallest value (might not be 0 in original) and 255 to the largest (might not be 255 in original).
+    Doesn't matter, this is only to make the mask.
+    """
+
+    # Load image and convert to grayscale
+    img = rgb2gray(img)
+
+    # Normalize values, range 0 to 255
+    img = (img - img.min()) / (img.max() - img.min())
+    img *= 255
+
+    # Make int values
+    img = img.astype(int)
+
+    # Return new image
+    return img
+
+
 def save_cropped(image):
     """
     Saves cropped image.
@@ -53,23 +76,25 @@ def save_mask(imagename):
     )
     args = parser.parse_args()
 
+    # Convert image to grayscale
+    gray_scale_img = normalize_image(img_as_array)
+
     # Create mask for horizontal lines
     h_lines_threshold = args.h_lines_threshold
     FILEPATH_mask = imagefolder_new + imagename + "_mask" + imagetype_new
     mask_horizontal_lines = find_horizontal_lines(
-        img_as_array, h_lines_threshold
+        gray_scale_img, h_lines_threshold
     )
     
     # Create mask for vertical lines
     v_lines_threshold = args.v_lines_threshold
     FILEPATH_mask = imagefolder_new + imagename + "_mask" + imagetype_new
     mask_vertical_lines = find_vertical_lines(
-        img_as_array, v_lines_threshold
+        gray_scale_img, v_lines_threshold
     )
 
     # Create mask for beamstop
     beamstop_threshold = args.beamstop_threshold
-    gray_scale_img = normalize_image(img_as_array)
     coordinates = select_area_of_interest(gray_scale_img)
     mask_beamstop = create_mask(gray_scale_img, coordinates, beamstop_threshold)
 
@@ -95,7 +120,7 @@ def save_mask(imagename):
 # Define paths and image types
 imagefolder = str(pathlib.Path(__file__).resolve().parents[1]) + "/Data/Raw data/"
 imagefolder_new = str(pathlib.Path(__file__).resolve().parents[1]) + "/Data/Input_data/"
-imagename = "MD2_MV_bulk_2" 
+imagename = "MD2_MV_edge_2" 
 imagetype = ".eps"
 imagetype_new = ".png"
 FILEPATH_img = imagefolder + imagename + imagetype

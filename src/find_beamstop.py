@@ -10,30 +10,6 @@ import pathlib
 #imagefolder = str(pathlib.Path(__file__).resolve().parents[1]) + "/Data/Input_data/"
 #img = plt.imread(imagefolder + "MD2_MV_bulk_2_new.png")
 
-
-def normalize_image(img):
-
-    """
-    Takes input image (usually RGB) and transforms it into grayscale.
-    Normalizes the inputs so that they are ints ranging from 0 to 255.
-    0 corresponds to smallest value (might not be 0 in original) and 255 to the largest (might not be 255 in original).
-    Doesn't matter, this is only to make the mask.
-    """
-
-    # Load image and convert to grayscale
-    img = rgb2gray(img)
-
-    # Normalize values, range 0 to 255
-    img = (img - img.min()) / (img.max() - img.min())
-    img *= 255
-
-    # Make int values
-    img = img.astype(int)
-
-    # Return new image
-    return img
-
-
 def select_area_of_interest(img):
 
     """
