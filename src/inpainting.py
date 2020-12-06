@@ -26,70 +26,77 @@ import torch
 import torch.optim
 
 from PIL import Image  # to save images
+import pathlib
+import argparse
 
 
 from utils.inpainting_utils import *
+
+# Command line arguments
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--plot",
+    help="Plots input image, mask and the mask applied to the input image",
+    action="store_true",
+)
+parser.add_argument(
+    "--save_every", help="How many iterations between every save.", default=25, type=int
+)
+parser.add_argument("--num_iter", help="Number of iterations.", default=500, type=int)
+args = parser.parse_args()
 
 torch.backends.cudnn.enabled = True
 torch.backends.cudnn.benchmark = True
 dtype = torch.FloatTensor  # dtype = torch.cuda.FloatTensor
 
-PLOT = True
+
+PLOT = args.plot
 imsize = -1
 dim_div_by = 64
 
-#%% Choose figure
-
-## Fig 6
-# img_path  = 'data/inpainting/vase.png'
-# mask_path = 'data/inpainting/vase_mask.png'
-
-## Fig 8
-# img_path  = 'data/inpainting/library.png'
-# mask_path = 'data/inpainting/library_mask.png'
-
-## Fig 7 (top)
-# img_path  = 'data/inpainting/kate.png'
-# mask_path = 'data/inpainting/kate_mask.png'
-
-## Our Fig
+# Path to input image, mask and output
 imtype = "edge"
-img_path = "../Data/Input_data/MD2_MV_" + imtype + "_2_new.png"
-mask_path = "../Data/Input_data/MD2_MV_" + imtype + "_2_mask.png"
-outp_path = "../Data/Output_data/" + imtype + "/plotout"
+img_path = (
+    str(pathlib.Path(__file__).resolve().parents[1])
+    + "/Data/Input_data/MD2_MV_"
+    + imtype
+    + "_2_new.png"
+)
+mask_path = (
+    str(pathlib.Path(__file__).resolve().parents[1])
+    + "/Data/Input_data/MD2_MV_"
+    + imtype
+    + "_2_mask.png"
+)
+outp_path = (
+    str(pathlib.Path(__file__).resolve().parents[1])
+    + "/Data/Output_data/"
+    + imtype
+    + "/plotout"
+)
 
-# Another text inpainting example
-# img_path  = 'data/inpainting/peppers.png'
-# mask_path = 'data/inpainting/peppers_mask.png'
-
+# Choose net
 NET_TYPE = "skip_depth6"  # one of skip_depth4|skip_depth2|UNET|ResNet
 
-#%% Load mask
-
+# Load mask
 img_pil, img_np = get_image(img_path, imsize)
 img_mask_pil, img_mask_np = get_image(mask_path, imsize)
 
-#%% Center crop
-
+# Center crop
 img_mask_pil = crop_image(img_mask_pil, dim_div_by)
 img_pil = crop_image(img_pil, dim_div_by)
 
 img_np = pil_to_np(img_pil)
 img_mask_np = pil_to_np(img_mask_pil)
 
-#%% Visualize
+# Visualize
+if PLOT:
+    plot_image_grid([img_np, img_mask_np, img_mask_np * img_np], 3, 11)
 
-img_mask_var = np_to_torch(img_mask_np).type(dtype)
-
-plot_image_grid([img_np, img_mask_np, img_mask_np * img_np], 3, 11)
-
-#%% Setup
-
+# Setup
 pad = "reflection"  # 'zero'
 OPT_OVER = "net"
 OPTIMIZER = "adam"
-
-#%%
 
 if "vase.png" in img_path:
     INPUT = "meshgrid"
@@ -97,7 +104,7 @@ if "vase.png" in img_path:
     LR = 0.01
     num_iter = 5001
     param_noise = False
-    show_every = 50
+    save_every = 50
     figsize = 32  # changed from 5
     reg_noise_std = 0.03
 
@@ -126,9 +133,9 @@ elif (
     INPUT = "noise"
     input_depth = 32
     LR = 0.01
-    num_iter = 500  # 6001 originally
+    num_iter = args.num_iter  # 6001 originally
     param_noise = False
-    show_every = int(num_iter / 20)
+    save_every = args.save_every
     figsize = 5
     reg_noise_std = 0.03
 
@@ -154,7 +161,7 @@ elif "library.png" in img_path:
     input_depth = 1
 
     num_iter = 3001
-    show_every = 50
+    save_every = 50
     figsize = 8
     reg_noise_std = 0.00
     param_noise = True
@@ -216,8 +223,6 @@ else:
 net = net.type(dtype)
 net_input = get_noise(input_depth, INPUT, img_np.shape[1:]).type(dtype)
 
-#%%
-
 # Compute number of parameters
 s = sum(np.prod(list(p.size())) for p in net.parameters())
 print("Number of params: %d" % s)
@@ -228,7 +233,7 @@ mse = torch.nn.MSELoss().type(dtype)
 img_var = np_to_torch(img_np).type(dtype)
 mask_var = np_to_torch(img_mask_np).type(dtype)
 
-#%% Main loop
+# Main loop
 
 i = 0
 
@@ -251,14 +256,13 @@ def closure():
     total_loss.backward()
 
     # print('Iteration %05d    Loss %f' % (i, total_loss.item()), '\r', end='')
-    if PLOT and i % show_every == 0:
+    if i % save_every == 0 or i == num_iter:
         out_np = torch_to_np(out)
-        plot_image_grid([np.clip(out_np, 0, 1)], factor=32, nrow=1)
-        # myimgplI = Image.fromarray(myimgpl)
+        out_np = 255 * np.moveaxis(out_np, 0, 2)
+        out_np = out_np.astype(np.uint8)
         filep = outp_path + str(i) + ".png"
-        # myimgplI.save(filep)
-        plt.savefig(filep)
-        plt.close()
+        image = Image.fromarray(out_np)
+        image.save(filep)
 
     i += 1
 
@@ -270,8 +274,3 @@ noise = net_input.detach().clone()
 
 p = get_params(OPT_OVER, net, net_input)
 optimize(OPTIMIZER, p, closure, LR, num_iter)
-
-#%% Get final image
-
-# out_np = torch_to_np(net(net_input))
-# plot_image_grid([out_np], factor=5);

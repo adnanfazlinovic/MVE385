@@ -253,7 +253,6 @@ def optimize(optimizer_type, parameters, closure, LR, num_iter):
             )  # does not work in notebooks apparently
             optimizer.zero_grad()
             total_loss = closure()
-            print(total_loss)
             optimizer.step()
             t.set_postfix(
                 total_loss=total_loss.item()
