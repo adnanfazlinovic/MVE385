@@ -256,7 +256,7 @@ def closure():
     total_loss.backward()
 
     # print('Iteration %05d    Loss %f' % (i, total_loss.item()), '\r', end='')
-    if i % save_every == 0 or i == num_iter:
+    if i % save_every == 0 or i == num_iter - 1:
         out_np = torch_to_np(out)
         out_np = 255 * np.moveaxis(out_np, 0, 2)
         out_np = out_np.astype(np.uint8)
