@@ -15,7 +15,7 @@
 
 
 ## The model
-- ~~Remove frame from the output of the DIP **(Noa)**
+- ~~Remove frame from the output of the DIP **(Noa)**~~
 - See how the model works on the beamstop
 -  Experiment with hyperparemeters and different models
    - Vase, Kate etc
