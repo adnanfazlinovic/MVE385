@@ -8,17 +8,19 @@
 - ~~Add user input for thresholds.~~ **(Noa)**
 - ~~Find vertical lines~~ **(Ingrid)**
 - Select multiple areas to mask **(Adnan?)**
-- Manual image cropping to remove matlab frame **(Adnan?)**
+- Manual image cropping to remove matlab frame **(Noa)**
 - Add detection of beamstop holder. Hard because the beamstop is not so dark. Possible solutions:
   - Rotated input image. Does not work when the image pattern is not circular.
   - Image segmentation
 
 
-## The model
+## Inpainting
 - ~~Remove frame from the output of the DIP **(Noa)**~~
-- See how the model works on the beamstop
--  Experiment with hyperparemeters and different models
+- ~~See how the model works on the beamstop (Works bad) **(Noa)**~~
+-  Experiment with hyperparemeters and different models **(Noa)**
    - Vase, Kate etc
    - reg_noise_std
-   - LR
+   - LR, LR decay
+- Combine DIP result with original image
 - Add early stopping
+
