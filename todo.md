@@ -23,4 +23,5 @@
    - LR, LR decay
 - Combine DIP result with original image
 - Add early stopping
+- Add parsing of input image path and creation of folder structure?
 
