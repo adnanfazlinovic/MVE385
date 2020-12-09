@@ -7,11 +7,8 @@
 - ~~Combine `findLines` and `adnan_test`. Change from `cv2` to `skimmage`.~~ **(Noa)**
 - ~~Add user input for thresholds.~~ **(Noa)**
 - ~~Find vertical lines~~ **(Ingrid)**
-- Select multiple areas to mask **(Adnan?)**
-- Manual image cropping to remove matlab frame **(Noa)**
-- Add detection of beamstop holder. Hard because the beamstop is not so dark. Possible solutions:
-  - Rotated input image. Does not work when the image pattern is not circular.
-  - Image segmentation
+- Select multiple areas to mask (beamstop holder specifically) **Adnan**
+- Manual image cropping to remove matlab frame
 
 
 ## Inpainting
@@ -21,7 +18,9 @@
    - Vase, Kate etc
    - reg_noise_std
    - LR, LR decay
-- Combine DIP result with original image
-- Add early stopping
+- Create radial and angular intensity plots
 - Add parsing of input image path and creation of folder structure?
+- *Combine DIP result with original image*
+- *Add early stopping*
+
 
