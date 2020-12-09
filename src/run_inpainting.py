@@ -2,7 +2,26 @@ from inpainting import *
 import argparse
 
 
-def test_hyperparameters():
+def test_hyperparameters_advanced():
+    global args
+    lrs = [0.00001, 0.00005, 0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1]
+    param_noises = [False, True]
+    reg_noise_stds = [0.3, 0.03, 0.003]
+
+    for lr in lrs:
+        for param_noise in param_noises:
+            for reg_noise_std in reg_noise_stds:
+                inp = Inpainting(
+                    args,
+                    "vase",
+                    lr=lr,
+                    param_noise=param_noise,
+                    reg_noise_std=reg_noise_std,
+                )
+                inp.perform_inpainting()
+
+
+def test_hyperparameters_basic():
     global args
     vase_and_kate_and_library = ["vase", "kate", "library"]
     nets = ["skip_depth6", "UNET", "ResNet", "skip_depth3", "skip_depth12"]
@@ -35,19 +54,23 @@ parser.add_argument(
 parser.add_argument(
     "--save_every",
     help="How many iterations between every save.",
-    default=25,
+    default=100,
     type=int,
 )
 parser.add_argument("--num_iter", help="Number of iterations.", default=500, type=int)
 parser.add_argument(
-    "--hyperparam_test", help="Run hyperparameter testing.", action="store_true"
+    "--tuning",
+    help="Either test different models (basic), or perform hyperparameter optimization (advanced).",
+    type=str,
 )
 parser.add_argument(
     "--imtype", help="Which imagetype to inpaint, e.g. shear.", default="edge", type=str
 )
 args = parser.parse_args()
 
-if args.hyperparam_test:
-    test_hyperparameters()
+if args.tuning == "basic":
+    test_hyperparameters_basic()
+if args.tuning == "advanced":
+    test_hyperparameters_advanced()
 else:
     inpaint_image()

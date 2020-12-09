@@ -34,16 +34,29 @@ from utils.inpainting_utils import *
 
 
 class Inpainting:
-    def __init__(self, args, vase_or_kate_or_library, NET_TYPE="skip_depth6"):
+    def __init__(
+        self,
+        args,
+        vase_or_kate_or_library,
+        NET_TYPE="skip_depth6",
+        lr=False,
+        param_noise=False,
+        reg_noise_std=False,
+    ):
         self.args = args
         self.vase_or_kate_or_library = vase_or_kate_or_library
         self.NET_TYPE = NET_TYPE  # one of skip_depth4|skip_depth2|UNET|ResNet
+        self.lr = lr
+        self.param_noise = param_noise
+        self.reg_noise_std = reg_noise_std
+
         self.i = 0
 
     def perform_inpainting(self):
         torch.backends.cudnn.enabled = True
         torch.backends.cudnn.benchmark = True
-        dtype = torch.FloatTensor  # dtype = torch.cuda.FloatTensor
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        dtype = torch.float32  # dtype = torch.cuda.FloatTensor
 
         PLOT = self.args.plot
         imsize = -1
@@ -63,11 +76,11 @@ class Inpainting:
             + imtype
             + "_2_mask.png"
         )
-        if self.args.hyperparam_test:
+        if self.args.tuning == "basic":
             if self.vase_or_kate_or_library == "library":
                 folder = (
                     str(Path(__file__).resolve().parents[1])
-                    + "/Data/Output_data/Hyperparameter testing/"
+                    + "/Data/Output_data/Hyperparameter optimization/Basic/"
                     + self.vase_or_kate_or_library
                     + "/"
                     + self.NET_TYPE
@@ -77,11 +90,33 @@ class Inpainting:
             else:
                 folder = (
                     str(Path(__file__).resolve().parents[1])
-                    + "/Data/Output_data/Hyperparameter testing/"
+                    + "/Data/Output_data/Hyperparameter optimization/Basic/"
                     + self.vase_or_kate_or_library
                     + "/"
                 )
                 Path(folder).mkdir(parents=True, exist_ok=True)
+            outp_path = folder + "/plotout"
+        elif self.args.tuning == "advanced":
+            print(
+                "lr =",
+                self.lr,
+                "param_noise =",
+                self.param_noise,
+                "reg_noise_std =",
+                self.reg_noise_std,
+            )
+            folder = (
+                str(Path(__file__).resolve().parents[1])
+                + "/Data/Output_data/Hyperparameter optimization/Advanced/"
+                + "lr="
+                + str(self.lr)
+                + ", param_noise="
+                + str(self.param_noise)
+                + ", reg_noise_std="
+                + str(self.reg_noise_std)
+                + "/"
+            )
+            Path(folder).mkdir(parents=True, exist_ok=True)
             outp_path = folder + "/plotout"
         else:
             outp_path = (
@@ -111,33 +146,40 @@ class Inpainting:
         OPT_OVER = "net"
         OPTIMIZER = "adam"
         num_iter = self.args.num_iter
-        save_every = self.args.save_every
+        if self.args.tuning == "advanced":
+            save_every = int(num_iter / 4)
+        else:
+            save_every = self.args.save_every
 
         if self.vase_or_kate_or_library == "vase":
             INPUT = "meshgrid"
             input_depth = 2
-            LR = 0.01
+            LR = self.lr if self.lr else 0.01
             # num_iter = 5001
-            param_noise = False
+            param_noise = self.param_noise if self.param_noise else False
             # save_every = 50
             figsize = 32  # changed from 5
-            reg_noise_std = 0.03
+            reg_noise_std = self.reg_noise_std if self.reg_noise_std else 0.03
 
-            net = skip(
-                input_depth,
-                img_np.shape[0],
-                num_channels_down=[128] * 5,
-                num_channels_up=[128] * 5,
-                num_channels_skip=[0] * 5,
-                upsample_mode="nearest",
-                filter_skip_size=1,
-                filter_size_up=3,
-                filter_size_down=3,
-                need_sigmoid=True,
-                need_bias=True,
-                pad=pad,
-                act_fun="LeakyReLU",
-            ).type(dtype)
+            net = (
+                skip(
+                    input_depth,
+                    img_np.shape[0],
+                    num_channels_down=[128] * 5,
+                    num_channels_up=[128] * 5,
+                    num_channels_skip=[0] * 5,
+                    upsample_mode="nearest",
+                    filter_skip_size=1,
+                    filter_size_up=3,
+                    filter_size_down=3,
+                    need_sigmoid=True,
+                    need_bias=True,
+                    pad=pad,
+                    act_fun="LeakyReLU",
+                )
+                .type(dtype)
+                .to(device)
+            )
 
         elif self.vase_or_kate_or_library == "kate":
             # Same params and net as in super-resolution and denoising
@@ -151,21 +193,25 @@ class Inpainting:
             figsize = 5
             reg_noise_std = 0.03
 
-            net = skip(
-                input_depth,
-                img_np.shape[0],
-                num_channels_down=[128] * 5,
-                num_channels_up=[128] * 5,
-                num_channels_skip=[128] * 5,
-                filter_size_up=3,
-                filter_size_down=3,
-                upsample_mode="nearest",
-                filter_skip_size=1,
-                need_sigmoid=True,
-                need_bias=True,
-                pad=pad,
-                act_fun="LeakyReLU",
-            ).type(dtype)
+            net = (
+                skip(
+                    input_depth,
+                    img_np.shape[0],
+                    num_channels_down=[128] * 5,
+                    num_channels_up=[128] * 5,
+                    num_channels_skip=[128] * 5,
+                    filter_size_up=3,
+                    filter_size_down=3,
+                    upsample_mode="nearest",
+                    filter_skip_size=1,
+                    need_sigmoid=True,
+                    need_bias=True,
+                    pad=pad,
+                    act_fun="LeakyReLU",
+                )
+                .type(dtype)
+                .to(device)
+            )
 
         elif self.vase_or_kate_or_library == "library":
             INPUT = "noise"
@@ -193,7 +239,7 @@ class Inpainting:
                     need_bias=True,
                     pad=pad,
                     act_fun="LeakyReLU",
-                ).type(dtype)
+                )
 
                 LR = 0.01
 
@@ -234,18 +280,20 @@ class Inpainting:
         else:
             assert False
 
-        net = net.type(dtype)
-        net_input = get_noise(input_depth, INPUT, img_np.shape[1:]).type(dtype)
+        net = net.type(dtype).to(device)
+        net_input = (
+            get_noise(input_depth, INPUT, img_np.shape[1:]).type(dtype).to(device)
+        )
 
         # Compute number of parameters
         s = sum(np.prod(list(p.size())) for p in net.parameters())
         # print("Number of params: %d" % s)
 
         # Loss
-        mse = torch.nn.MSELoss().type(dtype)
+        mse = torch.nn.MSELoss().type(dtype).to(device)
 
-        img_var = np_to_torch(img_np).type(dtype)
-        mask_var = np_to_torch(img_mask_np).type(dtype)
+        img_var = np_to_torch(img_np).type(dtype).to(device)
+        mask_var = np_to_torch(img_mask_np).type(dtype).to(device)
 
         # Main loop
         def closure():
