@@ -9,7 +9,7 @@ from skimage.transform import rotate # test
 # Import modules
 from find_lines import *
 from find_beamstop import *
-from find_vert import select_vert
+from find_vert import *
 
 
 def normalize_image(img):
