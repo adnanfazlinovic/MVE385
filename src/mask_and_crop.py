@@ -9,6 +9,7 @@ from skimage.transform import rotate # test
 # Import modules
 from find_lines import *
 from find_beamstop import *
+from find_vert import select_vert
 
 
 def normalize_image(img):
@@ -98,8 +99,11 @@ def save_mask(imagename):
     coordinates = select_area_of_interest(gray_scale_img)
     mask_beamstop = create_mask(gray_scale_img, coordinates, beamstop_threshold)
 
+    # Create mask for vertical line (holder)
+    mask_vert = select_vert(gray_scale_img)
+
     # Combine masks
-    mask_as_array = mask_horizontal_lines * mask_vertical_lines * mask_beamstop
+    mask_as_array = mask_horizontal_lines * mask_vertical_lines * mask_beamstop * mask_vert
 
     # Convert from array to 3-channel PIL image
     mask_as_array_as_dummy_rgb = np.transpose(
