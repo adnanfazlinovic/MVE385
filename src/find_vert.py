@@ -53,7 +53,7 @@ def select_vert(img):
     pts_t = tuple(map(tuple, pts))
     mask = np.ones((img.shape[0],img.shape[1]))
     for (x,y) in pts_t:
-        if polygon.get_path().contains_point((x,y)):
+        if p.get_path().contains_point((x,y)):
             mask[y][x] = 0
 
     # Return mask which is the area of interest with value 1, 0 else
