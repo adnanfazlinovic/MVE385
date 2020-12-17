@@ -1,46 +1,62 @@
 from inpainting import *
 import argparse
+import pathlib
 
 
-def test_hyperparameters_advanced():
+def test_hyperparameters_advanced(image_mask_pairs):
     global args
-    lrs = [0.00001, 0.00005, 0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1]
+    lrs = [0.0001, 0.001, 0.01, 0.05, 0.1]
     param_noises = [False, True]
-    reg_noise_stds = [0.3, 0.03, 0.003]
+    reg_noise_stds = [0.3, 0.03, 0.003, 0]
+    for image_mask_pair in image_mask_pairs:
+        print("----------------", image_mask_pair[0], "----------------")
+        for lr in lrs:
+            for param_noise in param_noises:
+                for reg_noise_std in reg_noise_stds:
+                    inp = Inpainting(
+                        args,
+                        image_mask_pair[0],
+                        image_mask_pair[1],
+                        "vase",
+                        lr=lr,
+                        param_noise=param_noise,
+                        reg_noise_std=reg_noise_std,
+                    )
+                    inp.perform_inpainting()
 
-    for lr in lrs:
-        for param_noise in param_noises:
-            for reg_noise_std in reg_noise_stds:
+
+def test_hyperparameters_basic(image_mask_pairs):
+    global args
+    vase_and_kate_and_library = ["vase", "kate", "library"]
+    nets = ["skip_depth6", "UNET", "ResNet", "skip_depth3", "skip_depth12"]
+    for image_mask_pair in image_mask_pairs:
+        print("----------------", image_mask_pair[0], "----------------")
+        for vase_or_kate_or_library in vase_and_kate_and_library:
+            if vase_or_kate_or_library == "library":
+                for net in nets:
+                    print("Now processing: ", vase_or_kate_or_library, "with net", net)
+                    inp = Inpainting(
+                        args,
+                        image_mask_pair[0],
+                        image_mask_pair[1],
+                        vase_or_kate_or_library,
+                        net,
+                    )
+                    inp.perform_inpainting()
+            else:
+                print("Now processing: ", vase_or_kate_or_library)
                 inp = Inpainting(
                     args,
-                    "vase",
-                    lr=lr,
-                    param_noise=param_noise,
-                    reg_noise_std=reg_noise_std,
+                    image_mask_pair[0],
+                    image_mask_pair[1],
+                    vase_or_kate_or_library,
                 )
                 inp.perform_inpainting()
 
 
-def test_hyperparameters_basic():
-    global args
-    vase_and_kate_and_library = ["vase", "kate", "library"]
-    nets = ["skip_depth6", "UNET", "ResNet", "skip_depth3", "skip_depth12"]
-
-    for vase_or_kate_or_library in vase_and_kate_and_library:
-        if vase_or_kate_or_library == "library":
-            for net in nets:
-                print("Now processing: ", vase_or_kate_or_library, "with net", net)
-                inp = Inpainting(args, vase_or_kate_or_library, net)
-                inp.perform_inpainting()
-        else:
-            print("Now processing: ", vase_or_kate_or_library)
-            inp = Inpainting(args, vase_or_kate_or_library)
-            inp.perform_inpainting()
-
-
 def inpaint_image():
     global args
-    inp = Inpainting(args, "kate")
+    inp = Inpainting(args, "MD2_MV_edge_2_new.png", "MD2_MV_edge_2_mask.png", "kate")
     inp.perform_inpainting()
 
 
@@ -63,14 +79,26 @@ parser.add_argument(
     help="Either test different models (basic), or perform hyperparameter optimization (advanced).",
     type=str,
 )
-parser.add_argument(
-    "--imtype", help="Which imagetype to inpaint, e.g. shear.", default="edge", type=str
-)
 args = parser.parse_args()
 
+# Input images and masks
+imagefolder = str(pathlib.Path(__file__).resolve().parents[1]) + "/Data/Input data/"
+files = os.listdir(imagefolder)
+masks = []
+for f in files:
+    if "mask" in f:
+        masks.append(f)
+        files = [ff for ff in files if ff != f]  # remove f from files
+
+image_mask_pairs = []
+for m in masks:
+    for f in files:  # files now only contain images, and not masks
+        if m.split("_mask")[0] == f.split(".")[0]:
+            image_mask_pairs.append((f, m))
+
 if args.tuning == "basic":
-    test_hyperparameters_basic()
+    test_hyperparameters_basic(image_mask_pairs)
 if args.tuning == "advanced":
-    test_hyperparameters_advanced()
+    test_hyperparameters_advanced(image_mask_pairs)
 else:
     inpaint_image()

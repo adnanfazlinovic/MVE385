@@ -37,6 +37,8 @@ class Inpainting:
     def __init__(
         self,
         args,
+        image,
+        mask,
         vase_or_kate_or_library,
         NET_TYPE="skip_depth6",
         lr=False,
@@ -44,6 +46,8 @@ class Inpainting:
         reg_noise_std=False,
     ):
         self.args = args
+        self.image = image
+        self.mask = mask
         self.vase_or_kate_or_library = vase_or_kate_or_library
         self.NET_TYPE = NET_TYPE  # one of skip_depth4|skip_depth2|UNET|ResNet
         self.lr = lr
@@ -63,24 +67,17 @@ class Inpainting:
         dim_div_by = 64
 
         # Path to input image, mask and output
-        imtype = self.args.imtype
         img_path = (
-            str(Path(__file__).resolve().parents[1])
-            + "/Data/Input_data/MD2_MV_"
-            + imtype
-            + "_2_new.png"
+            str(Path(__file__).resolve().parents[1]) + "/Data/Input data/" + self.image
         )
         mask_path = (
-            str(Path(__file__).resolve().parents[1])
-            + "/Data/Input_data/MD2_MV_"
-            + imtype
-            + "_2_mask.png"
+            str(Path(__file__).resolve().parents[1]) + "/Data/Input data/" + self.mask
         )
         if self.args.tuning == "basic":
             if self.vase_or_kate_or_library == "library":
                 folder = (
                     str(Path(__file__).resolve().parents[1])
-                    + "/Data/Output_data/Hyperparameter optimization/Basic/"
+                    + "/Data/Output data/Hyperparameter optimization/Basic/"
                     + self.vase_or_kate_or_library
                     + "/"
                     + self.NET_TYPE
@@ -90,7 +87,7 @@ class Inpainting:
             else:
                 folder = (
                     str(Path(__file__).resolve().parents[1])
-                    + "/Data/Output_data/Hyperparameter optimization/Basic/"
+                    + "/Data/Output data/Hyperparameter optimization/Basic/"
                     + self.vase_or_kate_or_library
                     + "/"
                 )
@@ -107,8 +104,9 @@ class Inpainting:
             )
             folder = (
                 str(Path(__file__).resolve().parents[1])
-                + "/Data/Output_data/Hyperparameter optimization/Advanced/"
-                + "lr="
+                + "/Data/Output data/Hyperparameter optimization/Advanced/"
+                + self.image
+                + "/lr="
                 + str(self.lr)
                 + ", param_noise="
                 + str(self.param_noise)
@@ -121,8 +119,8 @@ class Inpainting:
         else:
             outp_path = (
                 str(Path(__file__).resolve().parents[1])
-                + "/Data/Output_data/"
-                + imtype
+                + "/Data/Output data/"
+                + self.image
                 + "/plotout"
             )
 
