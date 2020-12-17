@@ -105,7 +105,8 @@ class Inpainting:
             folder = (
                 str(Path(__file__).resolve().parents[1])
                 + "/Data/Output data/Hyperparameter optimization/Advanced/"
-                + "lr="
+                + self.image
+                + "/lr="
                 + str(self.lr)
                 + ", param_noise="
                 + str(self.param_noise)
@@ -119,7 +120,7 @@ class Inpainting:
             outp_path = (
                 str(Path(__file__).resolve().parents[1])
                 + "/Data/Output data/"
-                + image
+                + self.image
                 + "/plotout"
             )
 
