@@ -117,6 +117,13 @@ class Inpainting:
             Path(folder).mkdir(parents=True, exist_ok=True)
             outp_path = folder + "/plotout"
         else:
+            folder = (
+                str(Path(__file__).resolve().parents[1])
+                + "/Data/Output data/"
+                + self.image.split(".")[0]
+                + "/"
+            )
+            Path(folder).mkdir(parents=True, exist_ok=True)
             outp_path = (
                 str(Path(__file__).resolve().parents[1])
                 + "/Data/Output data/"
