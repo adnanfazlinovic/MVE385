@@ -84,7 +84,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 # Input images and masks
-imagefolder = str(pathlib.Path(__file__).resolve().parents[1]) + "/Data/Input data/"
+imagefolder = str(pathlib.Path(__file__).resolve().parents[1]) + "/data/Input data/"
 files = os.listdir(imagefolder)
 masks = []
 for f in files:
