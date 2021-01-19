@@ -1,5 +1,10 @@
-# TetraPak project - AI and ML healing of the X-ray images
-MVE385 - Project course in mathematical and statistical modelling
+<p align="center">
+  <img src="https://github.com/adnanfazlinovic/MVE385/blob/main/data/Input%20data/MD2_MV_bulk_3.png" width="350" title="hover text">
+  <img src="https://github.com/adnanfazlinovic/MVE385/blob/main/data/Old%20results/Sorted%20results/MD2_MV_bulk_3.png/1%20Good/CHOSEN_lr%3D0.01%2C%20param_noise%3DTrue%2C%20reg_noise_std%3D0/CHOSEN_plotout4500.png" width="350" alt="accessibility text">
+</p>
+
+# Healing X-ray Scattering Images with the Deep Image Prior
+MVE385 - Project course in mathematical and statistical modelling in collaboration with Tetra Pak
 
 ## Introduction
 Background:\
@@ -12,12 +17,12 @@ Outcome: \
 The goal is to develop an automatic procedure for “image” healing utilizing “intelligence” and symmetry etc. to enhance the scattering patterns from SAXS/WAXS measurements.
 
 Methods:\
-Deep Image Prior. Original work: https://github.com/DmitryUlyanov/deep-image-prior.
+The Deep Image Prior. The implementation of the Deep Image Prior comes from this repo https://github.com/DmitryUlyanov/deep-image-prior. Disclaimer: We take no credit for the implementation of the Deep Image Prior in this repo, the full credit goes to the contributors to the aforementioned repo.
 
 ## User guide
 ### Dependencies
 To run the code, some packages are needed. You can create a conda environment with the required dependencies by running
-`conda env create -f environment.yml`. Some packages might be missing, in which case they should be installed with pip.
+`conda env create -f environment.yml`. Some packages might be missing, in which case they should be installed with pip, e.g. scikit-image (if module skimage is not found), torch, torchvision and matplotlib.
 
 ### Pre-processing
 The occluded images should be placed in the Raw data folder. To crop and mask these images, run
