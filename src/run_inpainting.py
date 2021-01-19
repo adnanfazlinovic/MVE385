@@ -56,8 +56,10 @@ def test_hyperparameters_basic(image_mask_pairs):
 
 def inpaint_image(image_mask_pairs):
     global args
-    inp = Inpainting(args, image_mask_pair[0], image_mask_pair[1], "vase")
-    inp.perform_inpainting()
+    for image_mask_pair in image_mask_pairs:
+        print("----------------", image_mask_pair[0], "----------------")
+        inp = Inpainting(args, image_mask_pair[0], image_mask_pair[1], "vase")
+        inp.perform_inpainting()
 
 
 # Command line arguments
@@ -101,4 +103,4 @@ if args.tuning == "basic":
 if args.tuning == "advanced":
     test_hyperparameters_advanced(image_mask_pairs)
 else:
-    inpaint_image()
+    inpaint_image(image_mask_pairs)
