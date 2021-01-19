@@ -54,9 +54,9 @@ def test_hyperparameters_basic(image_mask_pairs):
                 inp.perform_inpainting()
 
 
-def inpaint_image():
+def inpaint_image(image_mask_pairs):
     global args
-    inp = Inpainting(args, "MD2_MV_edge_2_new.png", "MD2_MV_edge_2_mask.png", "kate")
+    inp = Inpainting(args, image_mask_pair[0], image_mask_pair[1], "vase")
     inp.perform_inpainting()
 
 
