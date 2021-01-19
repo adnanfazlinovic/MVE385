@@ -68,16 +68,16 @@ class Inpainting:
 
         # Path to input image, mask and output
         img_path = (
-            str(Path(__file__).resolve().parents[1]) + "/Data/Input data/" + self.image
+            str(Path(__file__).resolve().parents[1]) + "/data/Input data/" + self.image
         )
         mask_path = (
-            str(Path(__file__).resolve().parents[1]) + "/Data/Input data/" + self.mask
+            str(Path(__file__).resolve().parents[1]) + "/data/Input data/" + self.mask
         )
         if self.args.tuning == "basic":
             if self.vase_or_kate_or_library == "library":
                 folder = (
                     str(Path(__file__).resolve().parents[1])
-                    + "/Data/Output data/Hyperparameter optimization/Basic/"
+                    + "/data/Output data/Hyperparameter optimization/Basic/"
                     + self.vase_or_kate_or_library
                     + "/"
                     + self.NET_TYPE
@@ -87,7 +87,7 @@ class Inpainting:
             else:
                 folder = (
                     str(Path(__file__).resolve().parents[1])
-                    + "/Data/Output data/Hyperparameter optimization/Basic/"
+                    + "/data/Output data/Hyperparameter optimization/Basic/"
                     + self.vase_or_kate_or_library
                     + "/"
                 )
@@ -104,7 +104,7 @@ class Inpainting:
             )
             folder = (
                 str(Path(__file__).resolve().parents[1])
-                + "/Data/Output data/Hyperparameter optimization/Advanced/"
+                + "/data/Output data/Hyperparameter optimization/Advanced/"
                 + self.image
                 + "/lr="
                 + str(self.lr)
@@ -119,17 +119,12 @@ class Inpainting:
         else:
             folder = (
                 str(Path(__file__).resolve().parents[1])
-                + "/Data/Output data/"
+                + "/data/Output data/"
                 + self.image.split(".")[0]
                 + "/"
             )
             Path(folder).mkdir(parents=True, exist_ok=True)
-            outp_path = (
-                str(Path(__file__).resolve().parents[1])
-                + "/Data/Output data/"
-                + self.image
-                + "/plotout"
-            )
+            outp_path = folder + "/plotout"
 
         # Load mask
         img_pil, img_np = get_image(img_path, imsize)

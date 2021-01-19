@@ -166,9 +166,9 @@ def save_mask(image_as_array, imagefolder_new, imagetype_new, imagename):
 
 if __name__ == "__main__":
     # Define paths and image types
-    imagefolder = str(pathlib.Path(__file__).resolve().parents[1]) + "/Data/Raw data/"
+    imagefolder = str(pathlib.Path(__file__).resolve().parents[1]) + "/data/Raw data/"
     imagefolder_new = (
-        str(pathlib.Path(__file__).resolve().parents[1]) + "/Data/Input data/"
+        str(pathlib.Path(__file__).resolve().parents[1]) + "/data/Input data/"
     )
     imagetype = ".eps"
     imagetype_new = ".png"
