@@ -15,11 +15,11 @@ Methods:\
 Deep Image Prior. Original work: https://github.com/DmitryUlyanov/deep-image-prior.
 
 ## User guide
-## Dependencies
+### Dependencies
 To run the code, some packages are needed. You can create a conda environment with the required dependencies by running
 `conda env create -f environment.yml`. Some packages might be missing, in which case they should be installed with pip.
 
-## Pre-processing
+### Pre-processing
 The occluded images should be placed in the Raw data folder. To crop and mask these images, run
 `mask_and_crop.py` which is located in the `src` folder, with or without flags. This will crop every image so that the frame, if existent, is removed and the the image is masked. The resulting images are placed in the Input data folder. The flags are used to set different thresholds related to identifying occlusions:
 - `h_lines_threshold`: float. Defines pixel threshold for horizontal lines in find_lines.py. Default: 0.01.
@@ -28,7 +28,7 @@ The occluded images should be placed in the Raw data folder. To crop and mask th
 
 One can use none, one or several of these flags, for example `python --h_lines_threshold 0.02 --beamstop_threshold 0.003`.
 
-## Inpainting
+### Inpainting
 When there is data in the Input data folder, one can proceed to perform the inpainting. This is done by running the `run_inpainting.py` script, with or without flags. Running without flags will inpaint all images in the Input data folder with the (currently known) best hyperparameters. Below are a list of flags and their meaning:
 - `tuning`: basic/advanced. Performs either basic or advanced hyperparameter tuning. Basic tuning tests the different configurations vase, kate and library that uses different network architectures. Advanced tuning uses the best configuration, vase, and tunes the three hyperparameters `lr`, `param_noises` and `reg_noise_stds`. Default: None, in which case no tuning is performed. Example usage: `python run_inpainting.py --tuning advanced`
 - `num_iter`: int. Number of iterations to run each training. Default: 500. Example usage: `python run_inpainting.py --num_iter 3000`.
