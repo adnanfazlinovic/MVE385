@@ -14,10 +14,10 @@ The goal is to develop an automatic procedure for “image” healing utilizing 
 Methods:\
 Deep Image Prior. Original work: https://github.com/DmitryUlyanov/deep-image-prior.
 
-## Get started
-### Dependencies
+## User guide
+## Dependencies
 To run the code, some packages are needed. You can create a conda environment with the required dependencies by running
-`conda env create -f environment.yml`.
+`conda env create -f environment.yml`. Some packages might be missing, in which case they should be installed with pip.
 
 ## Pre-processing
 The occluded images should be placed in the Raw data folder. To crop and mask these images, run
