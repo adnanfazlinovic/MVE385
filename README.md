@@ -31,7 +31,7 @@ The occluded images should be placed in the Raw data folder. To crop and mask th
 - `v_lines_threshold`: float. Defines pixel threshold for vertical lines in find_lines.py. Default: 0.005.
 - `beamstop_threshold`: int. Defines pixel threshold for find_beamstop.py. Default: 10.
 
-One can use none, one or several of these flags, for example `python --h_lines_threshold 0.02 --beamstop_threshold 0.003`.
+One can use none, one or several of these flags, for example `python mask_and_crop.py --h_lines_threshold 0.02 --beamstop_threshold 0.003`.
 
 ### Inpainting
 When there is data in the Input data folder, one can proceed to perform the inpainting. This is done by running the `run_inpainting.py` script, with or without flags. Running without flags will inpaint all images in the Input data folder with the (currently known) best hyperparameters. Below are a list of flags and their meaning:
